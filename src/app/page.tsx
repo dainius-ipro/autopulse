@@ -91,7 +91,7 @@ export default function Home() {
             Vehicle Intelligence,<br />Decoded Instantly
           </h1>
           <p style={{ fontSize: 16, color: "#64748b", maxWidth: 480, margin: "0 auto", lineHeight: 1.6 }}>
-            Free VIN decoder with DynamoDB caching, NHTSA integration, and self-learning database. 130+ data fields per vehicle.
+            VIN decoder powered by Ipro Technologies. 130+ data fields per vehicle.
           </p>
         </div>
 
