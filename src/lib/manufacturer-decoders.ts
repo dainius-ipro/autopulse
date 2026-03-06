@@ -174,7 +174,8 @@ export function manufacturerDecode(vin: string): ManufacturerDecode | null {
   var wmi2 = vin.substring(0, 2).toUpperCase();
 
   // Toyota
-  if (["JT", "SB"].includes(wmi2) || ["NMT", "VNK", "2T1", "4T1", "5T"].some(function(p) { return wmi.startsWith(p); })) {
+  if (["JT", "SB"].includes(wmi2) || ["SB1", "NMT", "VNK", "2T1", "4T1"].includes(wmi) || wmi.startsWith("5T")) {
+    if (wmi === "SBM") return null; // McLaren, not Toyota
     return decodeToyota(vin);
   }
   // BMW
