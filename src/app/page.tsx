@@ -223,7 +223,7 @@ export default function Home() {
 
         {/* FOOTER */}
         <div style={{ textAlign: "center", padding: "20px 0 40px", borderTop: "1px solid #e2e8f0" }}>
-          <span style={{ fontSize: 12, color: "#94a3b8" }}>AutoPulse v0.2.0 | VIN data: NHTSA vPIC (public domain) + DynamoDB cache | Built by VIMOTA</span>
+          <span style={{ fontSize: 12, color: "#94a3b8" }}>AIS v0.2.0 | VIN data: NHTSA vPIC (public domain) + DynamoDB cache | Built by Ipro Technologies</span>
         </div>
       </div>
     </div>
