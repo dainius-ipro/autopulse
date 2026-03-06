@@ -6,6 +6,9 @@ frontend:
         - npm ci
     build:
       commands:
+        - echo "DYNAMO_REGION=$DYNAMO_REGION" >> .env.production
+        - echo "DYNAMO_ACCESS_KEY_ID=$DYNAMO_ACCESS_KEY_ID" >> .env.production
+        - echo "DYNAMO_SECRET_ACCESS_KEY=$DYNAMO_SECRET_ACCESS_KEY" >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
