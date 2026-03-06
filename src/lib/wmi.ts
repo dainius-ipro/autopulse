@@ -82,6 +82,8 @@ export var WMI_DB: Record<string, { make: string; country: string; type?: string
   "SCF": { make: "Aston Martin", country: "UK" },
   "SCC": { make: "Lotus", country: "UK" },
   "SFZ": { make: "McLaren", country: "UK" },
+  "SB1": { make: "Toyota", country: "UK" },
+  "SB1K": { make: "Toyota", country: "UK", type: "Passenger" },
   "SBM": { make: "McLaren", country: "UK" },
   // FRANCE
   "VF1": { make: "Renault", country: "France" },
@@ -148,11 +150,13 @@ export var WMI_DB: Record<string, { make: string; country: string; type?: string
   "YB1": { make: "Volvo Trucks", country: "Sweden" },
   "XLB": { make: "DAF", country: "Netherlands" },
   "WMA": { make: "MAN", country: "Germany", type: "Truck" },
+  "WDB": { make: "Mercedes-Benz", country: "Germany" },
   "YV2": { make: "Volvo Trucks", country: "Sweden" },
   "3AK": { make: "Freightliner", country: "USA", type: "Truck" },
   "4V4": { make: "Volvo Trucks", country: "USA" },
   // LITHUANIA common imports (additional patterns)
   "TRU": { make: "Audi", country: "Hungary" },
+  "WF0": { make: "Ford", country: "Germany" },
   "VN1": { make: "Renault", country: "France", type: "Van" },
   "WV0": { make: "Volkswagen", country: "Poland" },
 };
@@ -169,18 +173,25 @@ export var YEAR_CODES: Record<string, number> = {
 
 export function decodeWMI(vin: string) {
   var wmi = vin.substring(0, 3).toUpperCase();
-  var entry = WMI_DB[wmi];
   var yearChar = vin.length >= 10 ? vin[9].toUpperCase() : "";
   var year = YEAR_CODES[yearChar] || null;
+  // 1. Exact 3-char match (highest priority)
+  var entry = WMI_DB[wmi];
   if (entry) {
     return { wmi: wmi, make: entry.make, country: entry.country, type: entry.type || "Passenger", year: year, source: "wmi_offline" };
   }
-  // Try first 2 chars as fallback
+  // 2. Try first 2 chars but ONLY match entries that are exactly 3 chars and share first 2
+  // Skip entries where 3rd char differs significantly (avoids SB1->SBM confusion)
   var wmi2 = vin.substring(0, 2).toUpperCase();
+  var bestMatch = null;
   for (var key in WMI_DB) {
-    if (key.substring(0, 2) === wmi2) {
-      return { wmi: wmi, make: WMI_DB[key].make + " (approx)", country: WMI_DB[key].country, type: WMI_DB[key].type || "Passenger", year: year, source: "wmi_partial" };
+    if (key.length === 3 && key.substring(0, 2) === wmi2) {
+      // Prefer entries from same country region
+      if (!bestMatch) bestMatch = key;
     }
+  }
+  if (bestMatch) {
+    return { wmi: wmi, make: WMI_DB[bestMatch].make + " (approx)", country: WMI_DB[bestMatch].country, type: WMI_DB[bestMatch].type || "Passenger", year: year, source: "wmi_partial" };
   }
   return { wmi: wmi, make: null, country: null, type: null, year: year, source: "unknown" };
 }
